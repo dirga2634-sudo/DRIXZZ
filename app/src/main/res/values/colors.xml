@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0a0a0f</color>
+    <color name="surface">#12121a</color>
+    <color name="surface2">#1a1a27</color>
+    <color name="divider">#1e1e2e</color>
+
+    <color name="accent_cyan">#00d4ff</color>
+    <color name="accent_purple">#7b2fff</color>
+    <color name="green">#00ff88</color>
+    <color name="red">#ff3366</color>
+    <color name="yellow">#ffcc00</color>
+
+    <color name="text_primary">#e8e8f0</color>
+    <color name="text_dim">#6a6a8a</color>
+
+    <!-- Material theme colors -->
+    <color name="colorPrimary">#00d4ff</color>
+    <color name="colorPrimaryDark">#0a0a0f</color>
+    <color name="colorAccent">#7b2fff</color>
+</resources>
