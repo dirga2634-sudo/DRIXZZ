@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp" android:background="@color/surface">
+        <com.google.android.material.textfield.TextInputLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense" android:layout_marginEnd="10dp">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_search" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Cari aplikasi..." android:textColor="@color/text" android:imeOptions="actionDone" android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView android:id="@+id/tv_count" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 aplikasi" android:textSize="11sp" android:textColor="@color/text_dim"/>
+    </LinearLayout>
+
+    <ProgressBar android:id="@+id/progress_bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_apps" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="8dp" android:clipToPadding="false"/>
+</LinearLayout>

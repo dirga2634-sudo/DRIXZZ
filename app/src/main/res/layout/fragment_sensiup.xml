@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RESOLUTION ENGINE" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/cyan" android:fontFamily="monospace" android:layout_marginBottom="4dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Modifikasi resolusi berbasis System Native Specs" android:textSize="12sp" android:textColor="@color/text_dim" android:layout_marginBottom="16dp"/>
+
+        <!-- Current Resolution -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="16dp" android:layout_marginBottom="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Resolusi Sekarang" android:textSize="12sp" android:textColor="@color/cyan" android:textStyle="bold" android:layout_marginBottom="6dp"/>
+            <TextView android:id="@+id/tv_current_res" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text"/>
+        </LinearLayout>
+
+        <!-- Config PPI & DPI -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/bg_card" android:padding="16dp" android:layout_marginBottom="12dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Setup PPI &amp; DPI" android:textSize="13sp" android:textColor="@color/cyan" android:textStyle="bold" android:layout_marginBottom="12dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="10dp">
+                <com.google.android.material.textfield.TextInputLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="8dp" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_width" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Width" android:inputType="number" android:textColor="@color/text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X" android:textColor="@color/text_dim" android:textSize="16sp" android:layout_marginEnd="8dp"/>
+                <com.google.android.material.textfield.TextInputLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_height" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Height" android:inputType="number" android:textColor="@color/text"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_dpi" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="DPI" android:inputType="number" android:textColor="@color/text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Presets -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Preset:" android:textSize="12sp" android:textColor="@color/text_dim" android:layout_marginBottom="8dp"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                <TextView android:id="@+id/btn_preset_540" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="540p" android:gravity="center" android:textColor="@color/text" android:background="@drawable/bg_btn_outline" android:layout_margin="3dp" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/btn_preset_720" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="720p" android:gravity="center" android:textColor="@color/cyan" android:background="@drawable/bg_btn_cyan" android:layout_margin="3dp" android:textSize="12sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/btn_preset_1080" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="1080p" android:gravity="center" android:textColor="@color/text" android:background="@drawable/bg_btn_outline" android:layout_margin="3dp" android:textSize="12sp" android:textStyle="bold"/>
+            </LinearLayout>
+
+            <TextView android:id="@+id/btn_apply_res" android:layout_width="match_parent" android:layout_height="48dp" android:text="Apply Changes" android:gravity="center" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/bg" android:background="@drawable/bg_btn_cyan" android:layout_marginBottom="8dp"/>
+            <TextView android:id="@+id/btn_reset_res" android:layout_width="match_parent" android:layout_height="48dp" android:text="Reset Settings" android:gravity="center" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/cyan" android:background="@drawable/bg_btn_outline"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

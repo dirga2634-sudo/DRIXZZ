@@ -1,272 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_dark"
-    android:gravity="center">
+    android:background="@color/bg">
 
-    <!-- Logo -->
+    <!-- Header -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="40dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="14dp"
+        android:background="@color/surface">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="DX ONE"
-            android:textSize="48sp"
+            android:layout_weight="1"
+            android:text="DRIZZX PROJECT"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:letterSpacing="0.15"
-            android:textColor="@color/accent_cyan" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="v1.1 · Android Toolkit"
-            android:textSize="13sp"
-            android:textColor="@color/text_dim"
-            android:letterSpacing="0.1" />
-    </LinearLayout>
-
-    <!-- Shizuku Status Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_shizuku"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        app:cardBackgroundColor="@color/surface"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="0dp">
+            android:textColor="@color/cyan"
+            android:letterSpacing="0.08"
+            android:fontFamily="monospace"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/shizuku_card"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="14dp">
+            android:background="@drawable/bg_card"
+            android:padding="6dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
             <View
-                android:id="@+id/iv_shizuku_dot"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:id="@+id/shizuku_dot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:background="@drawable/dot_red"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="6dp"/>
 
             <TextView
-                android:id="@+id/tv_shizuku_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Shizuku: Tidak aktif"
-                android:textSize="13sp"
-                android:textColor="@color/text_primary"
-                android:fontFamily="monospace"/>
-
-            <TextView
+                android:id="@+id/shizuku_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TAP"
-                android:textSize="10sp"
-                android:textColor="@color/accent_cyan"
-                android:textStyle="bold"/>
+                android:text="Shizuku: Tidak Aktif"
+                android:textSize="11sp"
+                android:textColor="@color/text_dim"
+                android:fontFamily="monospace"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <!-- Open Game -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/btn_opengame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:text="🎮"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:background="@drawable/bg_icon_cyan"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Open Game"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Browse &amp; launch apps"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_dim"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textSize="22sp"
-                    android:textColor="@color/text_dim"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Menu Tools -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/btn_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:text="⚡"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:background="@drawable/bg_icon_purple"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Menu Tools"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Shizuku &amp; system tools"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_dim"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textSize="22sp"
-                    android:textColor="@color/text_dim"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Debug -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/btn_debug"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:text="🐛"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:background="@drawable/bg_icon_green"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Debug Console"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Shell command &amp; live logs"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_dim"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textSize="22sp"
-                    android:textColor="@color/text_dim"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 
-    <!-- Package name footer -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="com.dx.one.free"
-        android:textSize="11sp"
-        android:textColor="@color/text_dim"
-        android:fontFamily="monospace"/>
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/surface"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/nav_launcher"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Launcher"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/text_dim"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/nav_tweaks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tweaks"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/text_dim"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/nav_sensiup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SensiUp"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/text_dim"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/nav_debug"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Debug"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/text_dim"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/nav_profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Profile"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/cyan"
+            android:padding="8dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 </LinearLayout>
