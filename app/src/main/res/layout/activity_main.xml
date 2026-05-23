@@ -80,10 +80,9 @@
                 android:id="@+id/nav_icon_launcher"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_nav_launcher"
-                android:colorFilter="@color/text_dim"/>
+                android:src="@drawable/ic_nav_launcher"/>
             <TextView
-                android:id="@+id/nav_launcher"
+                android:id="@+id/nav_text_launcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Launcher"
@@ -106,10 +105,9 @@
                 android:id="@+id/nav_icon_tweaks"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_nav_tweaks"
-                android:colorFilter="@color/text_dim"/>
+                android:src="@drawable/ic_nav_tweaks"/>
             <TextView
-                android:id="@+id/nav_tweaks"
+                android:id="@+id/nav_text_tweaks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tweaks"
@@ -132,10 +130,9 @@
                 android:id="@+id/nav_icon_sensiup"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_nav_sensiup"
-                android:colorFilter="@color/text_dim"/>
+                android:src="@drawable/ic_nav_sensiup"/>
             <TextView
-                android:id="@+id/nav_sensiup"
+                android:id="@+id/nav_text_sensiup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SensiUp"
@@ -158,10 +155,9 @@
                 android:id="@+id/nav_icon_debug"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_nav_debug"
-                android:colorFilter="@color/text_dim"/>
+                android:src="@drawable/ic_nav_debug"/>
             <TextView
-                android:id="@+id/nav_debug"
+                android:id="@+id/nav_text_debug"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Debug"
@@ -184,10 +180,9 @@
                 android:id="@+id/nav_icon_profile"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_nav_profile"
-                android:colorFilter="@color/cyan"/>
+                android:src="@drawable/ic_nav_profile"/>
             <TextView
-                android:id="@+id/nav_profile"
+                android:id="@+id/nav_text_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"

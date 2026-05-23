@@ -75,19 +75,19 @@ public class MainActivity extends AppCompatActivity {
         int cyan = getColor(R.color.cyan);
         int dim = getColor(R.color.text_dim);
 
-        binding.navLauncher.setTextColor(index == 0 ? cyan : dim);
+        binding.navTextLauncher.setTextColor(index == 0 ? cyan : dim);
         binding.navIconLauncher.setColorFilter(index == 0 ? cyan : dim);
 
-        binding.navTweaks.setTextColor(index == 1 ? cyan : dim);
+        binding.navTextTweaks.setTextColor(index == 1 ? cyan : dim);
         binding.navIconTweaks.setColorFilter(index == 1 ? cyan : dim);
 
-        binding.navSensiup.setTextColor(index == 2 ? cyan : dim);
+        binding.navTextSensiup.setTextColor(index == 2 ? cyan : dim);
         binding.navIconSensiup.setColorFilter(index == 2 ? cyan : dim);
 
-        binding.navDebug.setTextColor(index == 3 ? cyan : dim);
+        binding.navTextDebug.setTextColor(index == 3 ? cyan : dim);
         binding.navIconDebug.setColorFilter(index == 3 ? cyan : dim);
 
-        binding.navProfile.setTextColor(index == 4 ? cyan : dim);
+        binding.navTextProfile.setTextColor(index == 4 ? cyan : dim);
         binding.navIconProfile.setColorFilter(index == 4 ? cyan : dim);
     }
 
