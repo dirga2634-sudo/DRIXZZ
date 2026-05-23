@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background -->
+    <path
+        android:fillColor="#0a0a0f"
+        android:pathData="M0,0h108v108h-108z"/>
+
+    <!-- D letter outline -->
+    <path
+        android:strokeColor="#00d4ff"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M20,20 L20,88 L48,88 Q72,88 72,54 Q72,20 48,20 Z"/>
+
+    <!-- D inner -->
+    <path
+        android:strokeColor="#00d4ff"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M30,30 L30,78 L46,78 Q62,78 62,54 Q62,30 46,30 Z"/>
+
+    <!-- Z letter -->
+    <path
+        android:strokeColor="#00d4ff"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M78,20 L108,20 L78,88 L108,88"/>
+
+    <!-- Circuit dots -->
+    <circle android:fillColor="#00d4ff" android:cx="35" cy="40" android:r="2"/>
+    <circle android:fillColor="#00d4ff" android:cx="35" cy="54" android:r="2"/>
+    <circle android:fillColor="#00d4ff" android:cx="35" cy="68" android:r="2"/>
+    <circle android:fillColor="#00d4ff" android:cx="50" cy="35" android:r="2"/>
+    <circle android:fillColor="#00d4ff" android:cx="57" cy="54" android:r="2"/>
+    <circle android:fillColor="#00d4ff" android:cx="50" cy="73" android:r="2"/>
+
+    <!-- Glow lines -->
+    <path android:strokeColor="#1a00d4ff" android:strokeWidth="1" android:pathData="M35,40 L50,35"/>
+    <path android:strokeColor="#1a00d4ff" android:strokeWidth="1" android:pathData="M35,54 L57,54"/>
+    <path android:strokeColor="#1a00d4ff" android:strokeWidth="1" android:pathData="M35,68 L50,73"/>
+
+</vector>
