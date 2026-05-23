@@ -1,6 +1,7 @@
 package com.drizzx.project.fragment;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,68 +17,61 @@ public class SensiUpFragment extends Fragment {
 
     private FragmentSensiupBinding binding;
     private PrefManager pref;
+    private int deviceW, deviceH, deviceDpi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSensiupBinding.inflate(inflater, container, false);
         pref = new PrefManager(requireContext());
-        setupResolution();
-        return binding.getRoot();
-    }
 
-    private void setupResolution() {
-        android.util.DisplayMetrics dm = new android.util.DisplayMetrics();
+        DisplayMetrics dm = new DisplayMetrics();
         requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        deviceW = dm.widthPixels;
+        deviceH = dm.heightPixels;
+        deviceDpi = dm.densityDpi;
 
-        // Load saved values or use current
-        int savedW = pref.getWidth(dm.widthPixels);
-        int savedH = pref.getHeight(dm.heightPixels);
-        int savedDpi = pref.getDpi(dm.densityDpi);
+        binding.tvCurrentRes.setText(deviceW + " x " + deviceH + " (" + deviceDpi + " DPI)");
 
-        binding.tvCurrentRes.setText(dm.widthPixels + " x " + dm.heightPixels + " (" + dm.densityDpi + " DPI)");
+        int savedW = pref.getWidth(deviceW);
+        int savedH = pref.getHeight(deviceH);
+        int savedDpi = pref.getDpi(deviceDpi);
         binding.etWidth.setText(String.valueOf(savedW));
         binding.etHeight.setText(String.valueOf(savedH));
         binding.etDpi.setText(String.valueOf(savedDpi));
 
-        // Apply
+        setupButtons();
+        return binding.getRoot();
+    }
+
+    private void setupButtons() {
         binding.btnApplyRes.setOnClickListener(v -> {
             if (!check()) return;
             String ws = binding.etWidth.getText().toString().trim();
             String hs = binding.etHeight.getText().toString().trim();
             String ds = binding.etDpi.getText().toString().trim();
             if (ws.isEmpty() || hs.isEmpty() || ds.isEmpty()) { toast("Isi semua field"); return; }
-
             int w = Integer.parseInt(ws);
             int h = Integer.parseInt(hs);
             int d = Integer.parseInt(ds);
-
-            // Save to prefs
-            pref.setWidth(w);
-            pref.setHeight(h);
-            pref.setDpi(d);
-
+            pref.setWidth(w); pref.setHeight(h); pref.setDpi(d);
             ShizukuHelper.setResolution(w, h, (ok, out) -> {});
             ShizukuHelper.setDpi(d, (ok, out) ->
                 requireActivity().runOnUiThread(() ->
-                    toast(ok ? "Diterapkan: " + w + "x" + h + " @ " + d + "dpi" : "Gagal: " + out)));
+                    toast(ok ? "Diterapkan: " + w + "x" + h + " @ " + d + " DPI" : "Gagal: " + out)));
         });
 
-        // Reset
         binding.btnResetRes.setOnClickListener(v -> {
             if (!check()) return;
-            pref.setWidth(dm.widthPixels);
-            pref.setHeight(dm.heightPixels);
-            pref.setDpi(dm.densityDpi);
-            binding.etWidth.setText(String.valueOf(dm.widthPixels));
-            binding.etHeight.setText(String.valueOf(dm.heightPixels));
-            binding.etDpi.setText(String.valueOf(dm.densityDpi));
+            pref.setWidth(deviceW); pref.setHeight(deviceH); pref.setDpi(deviceDpi);
+            binding.etWidth.setText(String.valueOf(deviceW));
+            binding.etHeight.setText(String.valueOf(deviceH));
+            binding.etDpi.setText(String.valueOf(deviceDpi));
             ShizukuHelper.resetResolution((ok, out) -> {});
             ShizukuHelper.resetDpi((ok, out) ->
                 requireActivity().runOnUiThread(() ->
-                    toast(ok ? "Resolusi & DPI direset ke default" : "Gagal: " + out)));
+                    toast(ok ? "Direset ke default" : "Gagal: " + out)));
         });
 
-        // Presets
         binding.btnPreset540.setOnClickListener(v -> applyPreset(540, 1200, 160));
         binding.btnPreset720.setOnClickListener(v -> applyPreset(720, 1600, 230));
         binding.btnPreset1080.setOnClickListener(v -> applyPreset(1080, 2400, 395));
@@ -87,9 +81,7 @@ public class SensiUpFragment extends Fragment {
         binding.etWidth.setText(String.valueOf(w));
         binding.etHeight.setText(String.valueOf(h));
         binding.etDpi.setText(String.valueOf(dpi));
-        pref.setWidth(w);
-        pref.setHeight(h);
-        pref.setDpi(dpi);
+        pref.setWidth(w); pref.setHeight(h); pref.setDpi(dpi);
         if (!check()) return;
         ShizukuHelper.setResolution(w, h, (ok, out) -> {});
         ShizukuHelper.setDpi(dpi, (ok, out) ->
@@ -103,9 +95,7 @@ public class SensiUpFragment extends Fragment {
         return true;
     }
 
-    private void toast(String msg) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-    }
+    private void toast(String msg) { Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show(); }
 
     @Override public void onDestroyView() { super.onDestroyView(); binding = null; }
 }

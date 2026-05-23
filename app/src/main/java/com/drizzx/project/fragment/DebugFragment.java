@@ -1,5 +1,6 @@
 package com.drizzx.project.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class DebugFragment extends Fragment {
         binding = FragmentDebugBinding.inflate(inflater, container, false);
         printInit();
         setupButtons();
+        updateBadge();
         return binding.getRoot();
     }
 
@@ -37,7 +39,10 @@ public class DebugFragment extends Fragment {
         });
 
         binding.etCommand.setOnEditorActionListener((v, id, e) -> {
-            if (id == EditorInfo.IME_ACTION_DONE) { binding.btnRun.performClick(); return true; }
+            if (id == EditorInfo.IME_ACTION_DONE) {
+                binding.btnRun.performClick();
+                return true;
+            }
             return false;
         });
 
@@ -51,7 +56,8 @@ public class DebugFragment extends Fragment {
             if (!check()) return;
             addLog("CMD", "$ Device Info");
             ShizukuHelper.getDeviceInfo((ok, out) ->
-                requireActivity().runOnUiThread(() -> addLog(ok ? "OUT" : "ERR", out)));
+                requireActivity().runOnUiThread(() ->
+                    addLog(ok ? "OUT" : "ERR", out)));
         });
 
         binding.btnListPkg.setOnClickListener(v -> {
@@ -60,10 +66,10 @@ public class DebugFragment extends Fragment {
             ShizukuHelper.listPackages((ok, out) -> requireActivity().runOnUiThread(() -> {
                 if (!ok) { addLog("ERR", out); return; }
                 String[] lines = out.split("\n");
+                int max = Math.min(lines.length, 30);
                 StringBuilder sb = new StringBuilder();
-                int max = Math.min(lines.length, 20);
                 for (int i = 0; i < max; i++) sb.append(lines[i]).append("\n");
-                if (lines.length > 20) sb.append("... +").append(lines.length - 20).append(" lainnya");
+                if (lines.length > 30) sb.append("... +").append(lines.length - 30).append(" lainnya");
                 addLog("OUT", sb.toString().trim());
             }));
         });
@@ -77,11 +83,21 @@ public class DebugFragment extends Fragment {
     private void printInit() {
         addLog("SYS", "=== DRIZZX PROJECT Debug Console ===");
         addLog("INF", "Package: com.drizzx.project");
-        addLog("INF", "Android: " + android.os.Build.VERSION.RELEASE + " (SDK " + android.os.Build.VERSION.SDK_INT + ")");
-        addLog("INF", "Device: " + android.os.Build.MODEL);
-        addLog(ShizukuHelper.isRunning() ? "INF" : "WRN", "Shizuku: " + (ShizukuHelper.isRunning() ? "Aktif" : "Tidak Aktif"));
-        addLog(ShizukuHelper.hasPermission() ? "INF" : "WRN", "Permission: " + (ShizukuHelper.hasPermission() ? "OK" : "Belum"));
+        addLog("INF", "Device: " + Build.MANUFACTURER + " " + Build.MODEL);
+        addLog("INF", "Android: " + Build.VERSION.RELEASE + " (SDK " + Build.VERSION.SDK_INT + ")");
+        addLog("INF", "ABI: " + Build.SUPPORTED_ABIS[0]);
+        addLog(ShizukuHelper.isRunning() ? "INF" : "WRN",
+            "Shizuku: " + (ShizukuHelper.isRunning() ? "Aktif" : "Tidak Aktif"));
+        addLog(ShizukuHelper.hasPermission() ? "INF" : "WRN",
+            "Permission: " + (ShizukuHelper.hasPermission() ? "OK" : "Belum diberikan"));
         addLog("SYS", "Siap. Ketik command di bawah.");
+    }
+
+    private void updateBadge() {
+        boolean ok = ShizukuHelper.isRunning() && ShizukuHelper.hasPermission();
+        binding.tvShizukuBadge.setText(ok ? "Shizuku: OK" : "Shizuku: OFF");
+        binding.tvShizukuBadge.setTextColor(requireContext().getColor(ok ?
+            com.drizzx.project.R.color.green : com.drizzx.project.R.color.red));
     }
 
     private void runCmd(String cmd) {
@@ -102,7 +118,11 @@ public class DebugFragment extends Fragment {
 
     private boolean check() {
         if (!ShizukuHelper.isRunning()) { addLog("ERR", "Shizuku tidak aktif!"); return false; }
-        if (!ShizukuHelper.hasPermission()) { addLog("WRN", "Butuh permission Shizuku..."); ShizukuHelper.requestPermission(); return false; }
+        if (!ShizukuHelper.hasPermission()) {
+            addLog("WRN", "Butuh permission Shizuku...");
+            ShizukuHelper.requestPermission();
+            return false;
+        }
         return true;
     }
 

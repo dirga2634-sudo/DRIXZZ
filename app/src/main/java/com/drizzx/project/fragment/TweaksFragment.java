@@ -19,37 +19,16 @@ public class TweaksFragment extends Fragment {
 
     private FragmentTweaksBinding binding;
     private PrefManager pref;
-    private int selectedSensLevel = 4;
+    private int selectedSens = 4;
     private final TextView[] sensBtns = new TextView[7];
+    private boolean isLoading = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTweaksBinding.inflate(inflater, container, false);
         pref = new PrefManager(requireContext());
-        selectedSensLevel = pref.getSensLevel();
-        loadSavedState();
-        setupTweaks();
-        return binding.getRoot();
-    }
+        selectedSens = pref.getSensLevel();
 
-    private void loadSavedState() {
-        // Load semua switch state dari SharedPreferences - tidak perlu trigger callback
-        binding.switchMouse.setOnCheckedChangeListener(null);
-        binding.switchSensitivity.setOnCheckedChangeListener(null);
-        binding.switchSurfaceflinger.setOnCheckedChangeListener(null);
-        binding.switchGpu.setOnCheckedChangeListener(null);
-
-        binding.switchMouse.setChecked(pref.getMouseConfig());
-        binding.switchSensitivity.setChecked(pref.getSensEnabled());
-        binding.switchSurfaceflinger.setChecked(pref.getSurfaceFlinger());
-        binding.switchGpu.setChecked(pref.getGpu());
-
-        binding.layoutSensitivity.setVisibility(
-            pref.getSensEnabled() ? View.VISIBLE : View.GONE);
-    }
-
-    private void setupTweaks() {
-        // Inisialisasi array tombol sensitivity
         sensBtns[0] = binding.btnSens1;
         sensBtns[1] = binding.btnSens2;
         sensBtns[2] = binding.btnSens3;
@@ -58,27 +37,41 @@ public class TweaksFragment extends Fragment {
         sensBtns[5] = binding.btnSens6;
         sensBtns[6] = binding.btnSens7;
 
-        // Render border sensitivity
-        updateSensButtons(selectedSensLevel);
+        loadState();
+        setupListeners();
+        updateSensUI(selectedSens);
+        return binding.getRoot();
+    }
 
-        // Click sensitivity buttons
+    private void loadState() {
+        isLoading = true;
+        binding.switchMouse.setChecked(pref.getMouseConfig());
+        binding.switchSensitivity.setChecked(pref.getSensEnabled());
+        binding.switchSurfaceflinger.setChecked(pref.getSurfaceFlinger());
+        binding.switchGpu.setChecked(pref.getGpu());
+        binding.layoutSensitivity.setVisibility(pref.getSensEnabled() ? View.VISIBLE : View.GONE);
+        isLoading = false;
+    }
+
+    private void setupListeners() {
+        // Sensitivity buttons
         for (int i = 0; i < 7; i++) {
             final int level = i + 1;
             sensBtns[i].setOnClickListener(v -> {
-                selectedSensLevel = level;
+                selectedSens = level;
                 pref.setSensLevel(level);
-                updateSensButtons(level);
-                if (!check()) return;
+                updateSensUI(level);
+                if (!checkShizuku()) return;
                 ShizukuHelper.setSensitivity(level - 4, (ok, out) ->
                     requireActivity().runOnUiThread(() ->
                         toast("Sensitivity level " + level + " diterapkan")));
             });
         }
 
-        // Mouse Config
         binding.switchMouse.setOnCheckedChangeListener((btn, checked) -> {
+            if (isLoading) return;
             pref.setMouseConfig(checked);
-            if (!check()) return;
+            if (!checkShizuku()) return;
             ShizukuHelper.run(checked ?
                 "settings put system show_touches 1" :
                 "settings put system show_touches 0",
@@ -86,25 +79,25 @@ public class TweaksFragment extends Fragment {
                     toast("Mouse config " + (checked ? "aktif" : "nonaktif"))));
         });
 
-        // Sensitivity toggle
         binding.switchSensitivity.setOnCheckedChangeListener((btn, checked) -> {
+            if (isLoading) return;
             pref.setSensEnabled(checked);
             binding.layoutSensitivity.setVisibility(checked ? View.VISIBLE : View.GONE);
         });
 
-        // SurfaceFlinger
         binding.switchSurfaceflinger.setOnCheckedChangeListener((btn, checked) -> {
+            if (isLoading) return;
             pref.setSurfaceFlinger(checked);
-            if (!check()) return;
+            if (!checkShizuku()) return;
             ShizukuHelper.setSurfaceFlinger(checked, (ok, out) ->
                 requireActivity().runOnUiThread(() ->
                     toast("SurfaceFlinger " + (checked ? "aktif" : "nonaktif"))));
         });
 
-        // GPU
         binding.switchGpu.setOnCheckedChangeListener((btn, checked) -> {
+            if (isLoading) return;
             pref.setGpu(checked);
-            if (!check()) return;
+            if (!checkShizuku()) return;
             String cmd = checked ?
                 "settings put global hardware_renderer_disabled 0" :
                 "settings put global hardware_renderer_disabled 1";
@@ -113,9 +106,8 @@ public class TweaksFragment extends Fragment {
                     toast("GPU Acceleration " + (checked ? "aktif" : "nonaktif"))));
         });
 
-        // Clean Cache
         binding.btnCleanCache.setOnClickListener(v -> {
-            if (!check()) return;
+            if (!checkShizuku()) return;
             toast("Membersihkan cache...");
             ShizukuHelper.cleanCache((ok, out) ->
                 requireActivity().runOnUiThread(() ->
@@ -123,21 +115,20 @@ public class TweaksFragment extends Fragment {
         });
     }
 
-    private void updateSensButtons(int selected) {
+    private void updateSensUI(int selected) {
         for (int i = 0; i < 7; i++) {
+            if (sensBtns[i] == null) continue;
             if (i + 1 == selected) {
-                // Selected: border cyan, text cyan
                 sensBtns[i].setBackgroundResource(R.drawable.bg_sens_selected);
                 sensBtns[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.cyan));
             } else {
-                // Not selected: border dim, text dim
                 sensBtns[i].setBackgroundResource(R.drawable.bg_btn_outline);
                 sensBtns[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.text_dim));
             }
         }
     }
 
-    private boolean check() {
+    private boolean checkShizuku() {
         if (!ShizukuHelper.isRunning()) { toast("Shizuku tidak aktif"); return false; }
         if (!ShizukuHelper.hasPermission()) {
             ShizukuHelper.requestPermission();
@@ -151,9 +142,5 @@ public class TweaksFragment extends Fragment {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+    @Override public void onDestroyView() { super.onDestroyView(); binding = null; }
 }

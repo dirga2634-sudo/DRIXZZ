@@ -8,10 +8,11 @@
     <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="14dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
         android:background="@color/surface">
 
         <TextView
@@ -22,17 +23,15 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/cyan"
-            android:letterSpacing="0.08"
             android:fontFamily="monospace"/>
 
         <LinearLayout
             android:id="@+id/shizuku_card"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_card"
-            android:padding="6dp"
+            android:background="@drawable/bg_card_small"
             android:paddingStart="10dp"
             android:paddingEnd="10dp">
 
@@ -48,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Shizuku: Tidak Aktif"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textColor="@color/text_dim"
                 android:fontFamily="monospace"/>
         </LinearLayout>
@@ -64,71 +63,139 @@
     <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:orientation="horizontal"
-        android:background="@color/surface"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:background="@color/surface">
 
-        <TextView
+        <!-- Launcher -->
+        <LinearLayout
             android:id="@+id/nav_launcher"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Launcher"
-            android:textSize="11sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textColor="@color/text_dim"
-            android:padding="8dp"
-            android:textStyle="bold"/>
+            android:padding="4dp">
+            <ImageView
+                android:id="@+id/nav_icon_launcher"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_launcher"
+                android:colorFilter="@color/text_dim"/>
+            <TextView
+                android:id="@+id/nav_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Launcher"
+                android:textSize="9sp"
+                android:textColor="@color/text_dim"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-        <TextView
+        <!-- Tweaks -->
+        <LinearLayout
             android:id="@+id/nav_tweaks"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Tweaks"
-            android:textSize="11sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textColor="@color/text_dim"
-            android:padding="8dp"
-            android:textStyle="bold"/>
+            android:padding="4dp">
+            <ImageView
+                android:id="@+id/nav_icon_tweaks"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_tweaks"
+                android:colorFilter="@color/text_dim"/>
+            <TextView
+                android:id="@+id/nav_tweaks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tweaks"
+                android:textSize="9sp"
+                android:textColor="@color/text_dim"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-        <TextView
+        <!-- SensiUp -->
+        <LinearLayout
             android:id="@+id/nav_sensiup"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="SensiUp"
-            android:textSize="11sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textColor="@color/text_dim"
-            android:padding="8dp"
-            android:textStyle="bold"/>
+            android:padding="4dp">
+            <ImageView
+                android:id="@+id/nav_icon_sensiup"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_sensiup"
+                android:colorFilter="@color/text_dim"/>
+            <TextView
+                android:id="@+id/nav_sensiup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SensiUp"
+                android:textSize="9sp"
+                android:textColor="@color/text_dim"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-        <TextView
+        <!-- Debug -->
+        <LinearLayout
             android:id="@+id/nav_debug"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Debug"
-            android:textSize="11sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textColor="@color/text_dim"
-            android:padding="8dp"
-            android:textStyle="bold"/>
+            android:padding="4dp">
+            <ImageView
+                android:id="@+id/nav_icon_debug"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_debug"
+                android:colorFilter="@color/text_dim"/>
+            <TextView
+                android:id="@+id/nav_debug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Debug"
+                android:textSize="9sp"
+                android:textColor="@color/text_dim"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
-        <TextView
+        <!-- Profile -->
+        <LinearLayout
             android:id="@+id/nav_profile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Profile"
-            android:textSize="11sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:textColor="@color/cyan"
-            android:padding="8dp"
-            android:textStyle="bold"/>
+            android:padding="4dp">
+            <ImageView
+                android:id="@+id/nav_icon_profile"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_profile"
+                android:colorFilter="@color/cyan"/>
+            <TextView
+                android:id="@+id/nav_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textSize="9sp"
+                android:textColor="@color/cyan"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

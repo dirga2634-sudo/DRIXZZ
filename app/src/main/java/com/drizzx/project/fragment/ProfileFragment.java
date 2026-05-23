@@ -1,64 +1,76 @@
 package com.drizzx.project.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.drizzx.project.R;
 import com.drizzx.project.ShizukuHelper;
+import com.drizzx.project.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
 
+    private FragmentProfileBinding binding;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        TextView tvPhone = view.findViewById(R.id.tv_phone);
-        TextView tvAndroid = view.findViewById(R.id.tv_android);
-        TextView tvResolution = view.findViewById(R.id.tv_resolution);
-        TextView tvAbi = view.findViewById(R.id.tv_abi);
-        TextView tvShizukuStatus = view.findViewById(R.id.tv_shizuku_info);
-        View btnShizuku = view.findViewById(R.id.btn_shizuku);
-
-        tvPhone.setText(android.os.Build.MANUFACTURER + " | " + android.os.Build.MODEL);
-        tvAndroid.setText(android.os.Build.VERSION.RELEASE + " | SDK " + android.os.Build.VERSION.SDK_INT);
-        tvAbi.setText(android.os.Build.SUPPORTED_ABIS[0] + " | " + System.getProperty("os.version"));
-
-        android.util.DisplayMetrics dm = new android.util.DisplayMetrics();
-        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        tvResolution.setText(dm.widthPixels + "x" + dm.heightPixels + " (" + dm.densityDpi + " DPI)");
-
-        updateShizuku(tvShizukuStatus, btnShizuku);
-
-        return view;
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        loadDeviceInfo();
+        updateShizuku();
+        return binding.getRoot();
     }
 
-    private void updateShizuku(TextView tv, View btn) {
+    private void loadDeviceInfo() {
+        // Real device info
+        String brand = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        String android = Build.VERSION.RELEASE;
+        int sdk = Build.VERSION.SDK_INT;
+        String abi = Build.SUPPORTED_ABIS[0];
+        String kernel = System.getProperty("os.version", "-");
+
+        DisplayMetrics dm = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        String resolution = dm.widthPixels + "x" + dm.heightPixels + " (" + dm.densityDpi + " DPI)";
+
+        binding.tvPhone.setText(brand + " | " + model);
+        binding.tvAndroid.setText(android + " | SDK " + sdk);
+        binding.tvResolution.setText(resolution);
+        binding.tvAbi.setText(abi + " | " + kernel);
+        binding.tvBrand.setText(brand);
+    }
+
+    private void updateShizuku() {
         boolean running = ShizukuHelper.isRunning();
         boolean hasPerm = ShizukuHelper.hasPermission();
 
         if (!running) {
-            tv.setText("Izin Shizuku diperlukan");
-            btn.setVisibility(View.VISIBLE);
+            binding.tvShizukuInfo.setText("Izin Shizuku diperlukan");
+            binding.tvShizukuVersion.setText("Shizuku belum aktif");
+            binding.btnShizuku.setVisibility(View.VISIBLE);
         } else if (!hasPerm) {
-            tv.setText("Tap untuk izinkan Shizuku");
-            btn.setVisibility(View.VISIBLE);
+            binding.tvShizukuInfo.setText("Tap untuk izinkan Shizuku");
+            binding.tvShizukuVersion.setText("Menunggu izin...");
+            binding.btnShizuku.setVisibility(View.VISIBLE);
         } else {
-            tv.setText("Shizuku berfungsi");
-            btn.setVisibility(View.GONE);
+            binding.tvShizukuInfo.setText("Shizuku berfungsi");
+            binding.tvShizukuVersion.setText("Version: 13.x - Connected");
+            binding.btnShizuku.setVisibility(View.GONE);
         }
 
-        btn.setOnClickListener(v -> {
+        binding.btnShizuku.setOnClickListener(v -> {
             if (!running) {
-                android.widget.Toast.makeText(requireContext(),
-                    "Install dan jalankan Shizuku terlebih dahulu", android.widget.Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Install dan jalankan Shizuku terlebih dahulu", Toast.LENGTH_SHORT).show();
             } else {
                 ShizukuHelper.requestPermission();
             }
         });
     }
+
+    @Override public void onDestroyView() { super.onDestroyView(); binding = null; }
 }

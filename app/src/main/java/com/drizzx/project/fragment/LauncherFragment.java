@@ -1,8 +1,10 @@
 package com.drizzx.project.fragment;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -47,7 +49,9 @@ public class LauncherFragment extends Fragment {
         binding.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
             @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int st, int b, int c) { filter(s.toString()); }
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {
+                filter(s.toString());
+            }
         });
 
         loadApps();
@@ -56,27 +60,36 @@ public class LauncherFragment extends Fragment {
 
     private void loadApps() {
         binding.progressBar.setVisibility(View.VISIBLE);
+        binding.rvApps.setVisibility(View.GONE);
+
         new Thread(() -> {
             PackageManager pm = requireContext().getPackageManager();
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
             List<AppInfo> apps = new ArrayList<>();
-            for (android.content.pm.ResolveInfo ri : pm.queryIntentActivities(intent, 0)) {
+            List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+
+            for (ResolveInfo ri : list) {
                 try {
                     ApplicationInfo ai = pm.getApplicationInfo(ri.activityInfo.packageName, 0);
-                    if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) continue;
                     if (ai.packageName.equals(requireContext().getPackageName())) continue;
+
                     AppInfo info = new AppInfo();
                     info.name = pm.getApplicationLabel(ai).toString();
                     info.packageName = ai.packageName;
+                    info.activityName = ri.activityInfo.name;
                     info.icon = pm.getApplicationIcon(ai);
                     apps.add(info);
                 } catch (Exception ignored) {}
             }
+
             apps.sort((a, b) -> a.name.compareToIgnoreCase(b.name));
             allApps = apps;
+
             requireActivity().runOnUiThread(() -> {
                 binding.progressBar.setVisibility(View.GONE);
+                binding.rvApps.setVisibility(View.VISIBLE);
                 adapter.setData(apps);
                 binding.tvCount.setText(apps.size() + " aplikasi");
             });
@@ -84,10 +97,11 @@ public class LauncherFragment extends Fragment {
     }
 
     private void filter(String q) {
+        if (allApps == null) return;
         List<AppInfo> filtered = new ArrayList<>();
+        String ql = q.toLowerCase();
         for (AppInfo a : allApps) {
-            if (a.name.toLowerCase().contains(q.toLowerCase()) ||
-                a.packageName.toLowerCase().contains(q.toLowerCase())) {
+            if (a.name.toLowerCase().contains(ql) || a.packageName.toLowerCase().contains(ql)) {
                 filtered.add(a);
             }
         }
@@ -96,36 +110,18 @@ public class LauncherFragment extends Fragment {
     }
 
     private void onAppClick(AppInfo app) {
-        // Mode performa options
-        String[] modes = {"Normal", "Mode Performa", "Mode Hemat Baterai", "Force Stop dulu lalu Buka"};
-        String[] modeDesc = {
-            "Buka aplikasi langsung",
-            "Set CPU governor ke performance lalu buka",
-            "Set CPU governor ke powersave lalu buka",
-            "Force stop app lalu buka ulang"
-        };
+        String savedMode = pref.getPerfMode();
+        int savedIndex = getModeIndex(savedMode);
+        String[] modes = {"Normal", "Mode Performa", "Mode Hemat Baterai", "Force Stop + Buka"};
+        final int[] selected = {savedIndex};
 
         new MaterialAlertDialogBuilder(requireContext())
             .setTitle(app.name)
-            .setMessage("Package: " + app.packageName + "\n\nPilih mode untuk membuka aplikasi:")
+            .setMessage("Package: " + app.packageName)
+            .setSingleChoiceItems(modes, savedIndex, (d, which) -> selected[0] = which)
             .setNegativeButton("Batal", null)
-            .setNeutralButton("Info App", (d, w) -> showAppInfo(app))
-            .setPositiveButton("Buka", (d, w) -> showModeDialog(app))
-            .show();
-    }
-
-    private void showModeDialog(AppInfo app) {
-        String[] modes = {"Normal", "Mode Performa", "Mode Hemat Baterai", "Force Stop + Buka"};
-        int savedMode = getModeIndex(pref.getPerfMode());
-
-        new MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Pilih Mode Launch")
-            .setSingleChoiceItems(modes, savedMode, null)
-            .setNegativeButton("Batal", null)
-            .setPositiveButton("Launch", (d, w) -> {
-                android.app.AlertDialog ad = (android.app.AlertDialog) d;
-                int selected = ad.getListView().getCheckedItemPosition();
-                String modeKey = getModeKey(selected);
+            .setPositiveButton("Buka", (d, w) -> {
+                String modeKey = getModeKey(selected[0]);
                 pref.setPerfMode(modeKey);
                 launchWithMode(app, modeKey);
             })
@@ -135,65 +131,71 @@ public class LauncherFragment extends Fragment {
     private void launchWithMode(AppInfo app, String mode) {
         switch (mode) {
             case "performance":
+                Toast.makeText(requireContext(), "Mode Performa aktif...", Toast.LENGTH_SHORT).show();
                 if (ShizukuHelper.hasPermission()) {
-                    Toast.makeText(requireContext(), "Mengaktifkan mode performa...", Toast.LENGTH_SHORT).show();
                     ShizukuHelper.run(
-                        "for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do echo performance > $cpu 2>/dev/null; done",
-                        (ok, out) -> requireActivity().runOnUiThread(() -> launchApp(app)));
+                        "for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; " +
+                        "do echo performance > $cpu 2>/dev/null; done; " +
+                        "settings put global animator_duration_scale 0",
+                        (ok, out) -> requireActivity().runOnUiThread(() -> doLaunch(app)));
                 } else {
-                    launchApp(app);
+                    doLaunch(app);
                 }
                 break;
+
             case "powersave":
+                Toast.makeText(requireContext(), "Mode Hemat Baterai aktif...", Toast.LENGTH_SHORT).show();
                 if (ShizukuHelper.hasPermission()) {
-                    Toast.makeText(requireContext(), "Mengaktifkan mode hemat baterai...", Toast.LENGTH_SHORT).show();
                     ShizukuHelper.run(
-                        "for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do echo powersave > $cpu 2>/dev/null; done",
-                        (ok, out) -> requireActivity().runOnUiThread(() -> launchApp(app)));
+                        "for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; " +
+                        "do echo powersave > $cpu 2>/dev/null; done",
+                        (ok, out) -> requireActivity().runOnUiThread(() -> doLaunch(app)));
                 } else {
-                    launchApp(app);
+                    doLaunch(app);
                 }
                 break;
+
             case "forcestop":
+                Toast.makeText(requireContext(), "Force stop dulu...", Toast.LENGTH_SHORT).show();
                 if (ShizukuHelper.hasPermission()) {
-                    Toast.makeText(requireContext(), "Force stop dulu...", Toast.LENGTH_SHORT).show();
                     ShizukuHelper.forceStop(app.packageName, (ok, out) ->
                         requireActivity().runOnUiThread(() -> {
-                            try { Thread.sleep(500); } catch (Exception ignored) {}
-                            launchApp(app);
+                            try { Thread.sleep(800); } catch (Exception ignored) {}
+                            doLaunch(app);
                         }));
                 } else {
-                    launchApp(app);
+                    doLaunch(app);
                 }
                 break;
+
             default:
-                launchApp(app);
+                doLaunch(app);
                 break;
         }
     }
 
-    private void launchApp(AppInfo app) {
+    private void doLaunch(AppInfo app) {
         try {
-            Intent launch = requireContext().getPackageManager().getLaunchIntentForPackage(app.packageName);
-            if (launch != null) {
-                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(launch);
-            } else {
-                Toast.makeText(requireContext(), "Tidak bisa membuka " + app.name, Toast.LENGTH_SHORT).show();
+            // Cara 1: pakai ComponentName langsung (paling reliable)
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(app.packageName, app.activityName));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            startActivity(intent);
+        } catch (Exception e1) {
+            try {
+                // Cara 2: pakai getLaunchIntentForPackage
+                PackageManager pm = requireContext().getPackageManager();
+                Intent launch = pm.getLaunchIntentForPackage(app.packageName);
+                if (launch != null) {
+                    launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(launch);
+                } else {
+                    Toast.makeText(requireContext(), "Tidak bisa membuka " + app.name, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e2) {
+                Toast.makeText(requireContext(), "Error: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        } catch (Exception e) {
-            Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void showAppInfo(AppInfo app) {
-        ShizukuHelper.run("dumpsys package " + app.packageName + " | grep -E 'versionName|versionCode|firstInstallTime|lastUpdateTime'",
-            (ok, out) -> requireActivity().runOnUiThread(() ->
-                new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Info: " + app.name)
-                    .setMessage("Package: " + app.packageName + "\n\n" + (ok ? out : "Butuh Shizuku untuk info detail"))
-                    .setPositiveButton("OK", null)
-                    .show()));
     }
 
     private String getModeKey(int index) {
@@ -214,19 +216,18 @@ public class LauncherFragment extends Fragment {
         }
     }
 
-    // Data model
     static class AppInfo {
-        String name, packageName;
+        String name, packageName, activityName;
         Drawable icon;
     }
 
-    // Adapter
     static class AppAdapter extends RecyclerView.Adapter<AppAdapter.VH> {
         private List<AppInfo> data;
         private final OnClick listener;
         interface OnClick { void onClick(AppInfo a); }
 
         AppAdapter(List<AppInfo> data, OnClick l) { this.data = data; this.listener = l; }
+
         void setData(List<AppInfo> d) { this.data = d; notifyDataSetChanged(); }
 
         @NonNull @Override
@@ -247,7 +248,11 @@ public class LauncherFragment extends Fragment {
 
         static class VH extends RecyclerView.ViewHolder {
             ImageView icon; TextView name;
-            VH(View v) { super(v); icon = v.findViewById(R.id.iv_icon); name = v.findViewById(R.id.tv_name); }
+            VH(View v) {
+                super(v);
+                icon = v.findViewById(R.id.iv_icon);
+                name = v.findViewById(R.id.tv_name);
+            }
         }
     }
 
